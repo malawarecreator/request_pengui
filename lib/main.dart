@@ -12,7 +12,7 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  final List<String> _request_types = ["GET", "POST"];
+  final List<String> _request_types = ["GET", "POST", "PUT", "DELETE"];
   final _urlcontroller = TextEditingController();
   final _postdatacontroller = TextEditingController();
   String output_text = "";
@@ -112,7 +112,7 @@ class _MainAppState extends State<MainApp> {
                   });
                 } catch (e) {
                   setState(() {
-                    output_text = "Error: $e";
+                    output_text = "Error $e";
                   });
                 }
               } 
@@ -128,7 +128,37 @@ class _MainAppState extends State<MainApp> {
                   });
                 }
               }
+              if (_request_type == "PUT") {
+                try { 
+                  final res = await http.put(uri, body: _postdatacontroller.text);
+                  setState(()  {
+                    output_text = res.statusCode == 201 ? res.body : "Error: ${res.statusCode}";
+                  });
 
+                } catch (e) {
+                  setState(() {
+                    output_text  = "Error $e";
+                  });
+                }
+                if (_request_type == "DELETE") {
+                  try {
+                    final res = await http.delete(uri);
+                    setState(() {
+                      if (res.statusCode == 200 || res.statusCode == 204) {
+                        output_text = res.body;
+
+                      } else {
+                        output_text = "Error: ${res.statusCode}";
+                      }
+                    });
+
+                  } catch (e) {
+                    setState(() {
+                      output_text = "Error $e";
+                    });
+                  }
+                }
+              }
 
 
             }, child: Text("Send Request")),
