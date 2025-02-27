@@ -23,17 +23,19 @@ class _MainAppState extends State<MainApp> {
   @override
   void dispose() {
     _urlcontroller.dispose();
+    _postdatacontroller.dispose();
+    
     super.dispose();
   }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: DefaultTabController(length: 2, child: Scaffold(
+      home: DefaultTabController(length: 3, child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.web)),
+              Tab(icon: Icon(Icons.public)),
               Tab(icon: Icon(Icons.settings),),
               Tab(icon: Icon(Icons.arrow_circle_right_outlined)),
 
@@ -181,6 +183,7 @@ class _MainAppState extends State<MainApp> {
                 }
                 if (_request_type == "TRACE") {
                   try {
+                    
                     final res = await http.get(Uri.parse("192.168.1.80:8080/api?command=TRACE&url=${_urlcontroller.text}"));
                     setState(() {
                       if (res.statusCode == 200) {
