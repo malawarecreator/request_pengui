@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 void main() {
   runApp(const MainApp());
 }
@@ -15,6 +16,7 @@ class _MainAppState extends State<MainApp> {
   final List<String> _request_types = ["GET", "POST", "PUT", "DELETE"];
   final _urlcontroller = TextEditingController();
   final _postdatacontroller = TextEditingController();
+  final Uri gh_uri = Uri.parse("https://github.com/malawarecreator/request_pengui.git");
   String output_text = "";
   
   String? _request_type = "GET";
@@ -171,9 +173,9 @@ class _MainAppState extends State<MainApp> {
               SizedBox(height: 30,),
               Text("Settings", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),),
               SizedBox(height: 60,),
-              Text("Nothing to see here!", textAlign:  TextAlign.center, style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),),
-              SizedBox(height: 30,),
-              Icon(Icons.search, size: 300,)
+              ElevatedButton(onPressed: () async {
+                await launchUrl(gh_uri);
+              }, child: Text("Go to this App's GitHub", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),)
             ],
           ),
         ]),
