@@ -179,6 +179,24 @@ class _MainAppState extends State<MainApp> {
 
                   }
                 }
+                if (_request_type == "TRACE") {
+                  try {
+                    final res = await http.get(Uri.parse("192.168.1.80:8080/api?command=TRACE&url=${_urlcontroller.text}"));
+                    setState(() {
+                      if (res.statusCode == 200) {
+                        output_text = res.body;
+                      } else {
+                        output_text = "Error: ${res.statusCode}";
+                      }
+                    });
+
+                  } catch (e) {
+                    setState(() {
+                      output_text = "Error $e";
+                    });
+
+                  }
+                }
               }
 
 
