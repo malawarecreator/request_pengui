@@ -218,7 +218,7 @@ class _MainAppState extends State<MainApp> {
           SingleChildScrollView(child: Column(
             children: [
               SizedBox(height: 40,),
-              Text("WebSocket Requests (UNIMPLEMENTED)"),
+              Text("WebSocket Requests (UNIMPLEMENTED)", textAlign: TextAlign.center , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),),
               
             ],
           ),)
