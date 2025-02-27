@@ -13,7 +13,7 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  final List<String> _request_types = ["GET", "POST", "PUT", "DELETE"];
+  final List<String> _request_types = ["GET", "POST", "PUT", "DELETE", "TRACE", "OPTIONS"];
   final _urlcontroller = TextEditingController();
   final _postdatacontroller = TextEditingController();
   final Uri gh_uri = Uri.parse("https://github.com/malawarecreator/request_pengui.git");
@@ -35,6 +35,8 @@ class _MainAppState extends State<MainApp> {
             tabs: [
               Tab(icon: Icon(Icons.web)),
               Tab(icon: Icon(Icons.settings),),
+              Tab(icon: Icon(Icons.arrow_circle_right_outlined)),
+
               
             ]
             
@@ -160,6 +162,23 @@ class _MainAppState extends State<MainApp> {
                     });
                   }
                 }
+                if (_request_type == "OPTIONS") {
+                  try {
+                    final res = await http.get(Uri.parse("192.168.1.80:8080/api?command=OPTIONS&url=${_urlcontroller.text}"));
+                    setState(() {
+                      if (res.statusCode == 200) {
+                        output_text = res.body;
+                      } else {
+                        output_text = "Error: ${res.statusCode}";
+                      }
+                    });
+                  } catch (e) {
+                    setState(() {
+                      output_text = "Error $e";
+                    });
+
+                  }
+                }
               }
 
 
@@ -170,7 +189,7 @@ class _MainAppState extends State<MainApp> {
           ),
           Column(
             children: [
-              SizedBox(height: 30,),
+              SizedBox(height: 40,),
               Text("Settings", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),),
               SizedBox(height: 60,),
               ElevatedButton(onPressed: () async {
@@ -178,6 +197,13 @@ class _MainAppState extends State<MainApp> {
               }, child: Text("Go to this App's GitHub", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),)
             ],
           ),
+          SingleChildScrollView(child: Column(
+            children: [
+              SizedBox(height: 40,),
+              Text("WebSocket Requests (UNIMPLEMENTED)"),
+              
+            ],
+          ),)
         ]),
       ))
     );
