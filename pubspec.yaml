@@ -12,6 +12,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.3
   url_launcher: ^6.1.11
   http: ^1.3.0
+  web_socket_channel: ^3.0.2 
 
 dev_dependencies:
   flutter_test:
@@ -29,8 +30,7 @@ flutter_launcher_icons:
   web:
     generate: true
     image_path: "assets/icon/icon.png"
-    background_color: "#hexcode" # Replace with actual hex code
-    theme_color: "#hexcode" # Replace with actual hex code
+    # Replace with actual hex code
   windows:
     generate: true
     image_path: "assets/icon/icon.png"
