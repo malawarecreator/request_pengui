@@ -1,10 +1,11 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_channel/status.dart' as status;
+import 'package:google_fonts/google_fonts.dart';
+
+
 void main() {
   runApp(const MainApp());
 }
@@ -30,6 +31,7 @@ class _MainAppState extends State<MainApp> {
   final _postdatacontroller = TextEditingController();
   final _websocketurlcontroller = TextEditingController();
   final _websocketmessagedatacontroller = TextEditingController();
+  ThemeData theme = ThemeData.light();
   WebSocketChannel? _channel;
 
   final Uri gh_uri = Uri.parse(
@@ -37,6 +39,7 @@ class _MainAppState extends State<MainApp> {
   );
   String output_text = "";
   String websocket_output_text = "";
+  bool switch_val = false;
 
   String? _request_type = "GET";
   @override
@@ -65,6 +68,7 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: theme,
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
         length: 3,
@@ -227,6 +231,7 @@ class _MainAppState extends State<MainApp> {
                               );
                               setState(() {
                                 if (res.statusCode == 200) {
+                                  
                                   output_text = res.body;
                                 } else {
                                   output_text = "Error: ${res.statusCode}";
@@ -254,6 +259,7 @@ class _MainAppState extends State<MainApp> {
                               });
                             } catch (e) {
                               setState(() {
+                                
                                 output_text = "Error $e";
                               });
                             }
@@ -262,32 +268,52 @@ class _MainAppState extends State<MainApp> {
                       },
                       child: Text("Send Request"),
                     ),
-                    Text(output_text, textAlign: TextAlign.center),
+                    Text(output_text, style: GoogleFonts.sourceCodePro(),)
                   ],
                 ),
               ),
-              Column(
-                children: [
-                  SizedBox(height: 40),
-                  Text(
-                    "Settings",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                  ),
-                  SizedBox(height: 60),
-                  ElevatedButton(
-                    onPressed: () async {
-                      await launchUrl(gh_uri);
-                    },
-                    child: Text(
-                      "Go to this App's GitHub",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+              SingleChildScrollView(
+
+              
+              
+                child: Column(
+
+                  children: [
+                    SizedBox(height: 40),
+                    Text(
+                      "Settings",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+                    ),
+                    SizedBox(height: 60),
+                    ElevatedButton(
+                      onPressed: () async {
+                        await launchUrl(gh_uri);
+                      },
+                      child: Text(
+                        "Go to this App's GitHub",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 30,),
+
+                    Text("Dark Mode:", textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
+                    Switch(value: switch_val, onChanged: (bool val) {
+                      setState(() {
+
+                        switch_val = !switch_val;
+                        if (switch_val == false) {
+                          theme = ThemeData.light();
+                        } else {
+                          theme = ThemeData.dark();
+                        }
+                      });
+                    })
+                  ],
+                ),
               ),
               SingleChildScrollView(
                 child: Column(
@@ -369,7 +395,7 @@ class _MainAppState extends State<MainApp> {
                       },
                     ),
                     SizedBox(height: 20),
-                    Text(websocket_output_text),
+                    Text(websocket_output_text, textAlign: TextAlign.center, style: GoogleFonts.sourceCodePro(),),
 
 
 
