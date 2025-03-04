@@ -1,14 +1,19 @@
 
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path; 
+import 'dart:io';
 
 
 void main() {
   runApp(const MainApp());
 }
+
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
@@ -27,10 +32,13 @@ class _MainAppState extends State<MainApp> {
     "TRACE",
     "OPTIONS",
   ];
+  
   final _urlcontroller = TextEditingController();
   final _postdatacontroller = TextEditingController();
   final _websocketurlcontroller = TextEditingController();
   final _websocketmessagedatacontroller = TextEditingController();
+  final _downloadurlcontroller = TextEditingController();
+
   ThemeData theme = ThemeData.light();
   WebSocketChannel? _channel;
 
@@ -39,6 +47,7 @@ class _MainAppState extends State<MainApp> {
   );
   String output_text = "";
   String websocket_output_text = "";
+  String download_output_text = "";
   bool switch_val = false;
 
   String? _request_type = "GET";
@@ -48,6 +57,7 @@ class _MainAppState extends State<MainApp> {
     _postdatacontroller.dispose();
     _websocketurlcontroller.dispose();
     _channel?.sink.close();
+    _downloadurlcontroller.dispose();
     super.dispose();
   }
   void connectWebSocket() {
@@ -71,7 +81,7 @@ class _MainAppState extends State<MainApp> {
       theme: theme,
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
-        length: 3,
+        length: 4,
         child: Scaffold(
           appBar: AppBar(
             bottom: TabBar(
@@ -79,6 +89,7 @@ class _MainAppState extends State<MainApp> {
                 Tab(icon: Icon(Icons.public)),
                 Tab(icon: Icon(Icons.settings)),
                 Tab(icon: Icon(Icons.arrow_circle_right_outlined)),
+                Tab(icon: Icon(Icons.folder)),
               ],
             ),
           ),
@@ -358,7 +369,7 @@ class _MainAppState extends State<MainApp> {
                       ),
                     ),
                     SizedBox(height: 30,),
-                     ElevatedButton(
+                    ElevatedButton(
                       onPressed: () {
                         connectWebSocket();
                       },
@@ -402,6 +413,76 @@ class _MainAppState extends State<MainApp> {
                   ],
                 ),
               ),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 40,),
+                    Text("Downloads Over HTTP", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),),
+                    SizedBox(height: 30,),
+                    SizedBox(
+                      width: 300,
+                      child: TextField(
+                        controller: _downloadurlcontroller,
+                        decoration:  InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+
+                          ),
+                          hintText: "Enter the Download server URL",
+                          filled: true
+
+                        ),
+
+                      ),
+                      
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    
+                    
+                    ElevatedButton(onPressed: () async {
+                      if (_downloadurlcontroller.text.isEmpty) {
+                        setState(() {
+                          download_output_text = "Missing URL Param";
+                        });
+                        return;
+                      }
+                      try {
+                        final res = await http.get(Uri.parse(_downloadurlcontroller.text));
+
+                        if (res.statusCode == 200) {
+                          final dir = await getApplicationDocumentsDirectory();
+                          final filename = path.basename(_downloadurlcontroller.text);
+                          final fpath = "${dir.path}/$filename";
+                          final file = File(fpath);          
+                          await file.writeAsBytes(res.bodyBytes);
+                          setState(() {
+                            download_output_text = "Download successful at $fpath";
+                          });              
+
+                        } else {
+                          setState(() {
+                            download_output_text = "Download Failed: ${res.statusCode}";
+                          });
+                        } 
+                      } catch (e) {
+                        setState(() {
+                          
+                          download_output_text = "Error While Downloading: $e";
+                        });
+                      }
+
+                      
+
+                    }, child: Text("Get File")),
+                    SizedBox(height: 20,),
+                    Text(download_output_text, textAlign: TextAlign.center, style: GoogleFonts.sourceCodePro(),),
+                    
+                  ],
+
+                ),
+              )
             ],
           ),
         ),
