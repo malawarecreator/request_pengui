@@ -8,9 +8,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path; 
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+void main() async  {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
 
-
-void main() {
   runApp(const MainApp());
 }
 
@@ -49,6 +55,8 @@ class _MainAppState extends State<MainApp> {
   String websocket_output_text = "";
   String download_output_text = "";
   bool switch_val = false;
+  var db = FirebaseFirestore.instance;
+
 
   String? _request_type = "GET";
   @override
@@ -275,6 +283,14 @@ class _MainAppState extends State<MainApp> {
                               });
                             }
                           }
+
+                          final RequestData =  {
+                            "type": _request_type,
+                            "output": output_text,
+
+                          };
+                          db.collection("request_data").doc().set(RequestData).onError((e, _) => print("error $e"));
+
                         }
                       },
                       child: Text("Send Request"),

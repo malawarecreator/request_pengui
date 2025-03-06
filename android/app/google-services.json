@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "500227745456",
+    "project_id": "request-pengui",
+    "storage_bucket": "request-pengui.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:500227745456:android:88acaf9e359242c458bd75",
+        "android_client_info": {
+          "package_name": "com.example.request_pengui"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYekFN0Gpozp_5ep2HuUM4pUPiYZey1HQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
